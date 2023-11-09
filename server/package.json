@@ -9,7 +9,7 @@
     "clean": "rm -rf build",
     "tsc": "tsc",
     "serve": "node build/index.js",
-    "build": "$(npm bin)/npm-run-all clean tsc",
+    "build": "npm-run-all clean tsc",
     "dev": "nodemon src/index.ts",
     "serve2": "nodemon src/tests.ts"
   },
