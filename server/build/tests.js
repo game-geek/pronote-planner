@@ -12,10 +12,6 @@
 // import busboy from 'busboy';
 // var contentType = require('content-type')
 // var getRawBody = require('raw-body')
-
-
-
-
 // const app = express();
 // //Add the client URL to the CORS policy
 // const whitelist = ["http://localhost:3000", "https://lovely-toys-listen.loca.lt/"];
@@ -30,31 +26,20 @@
 //   },
 //   credentials: true,
 // };
-
 // app.use(cors(corsOptions));
-
 // // app.use(function(req, res, next)  {
 // //   req.on("data",() => {
 // //     console.log("data")
 // //   })
 // //   console.log("request")
 // //   let oldSend = res.send;
-
 // //   // res.send = function (data) {
-
 // //   //   logger.info(JSON.parse(data));
-
 // //   //   oldSend.apply(res, arguments);
-
 // //   // }
-
 // //   next();
-
 // // })
-
-
 // // app.use(express.json());  
-
 // // app.use(function (req, res, next) {
 // //   getRawBody(req, {
 // //     length: req.headers['content-length'],
@@ -67,7 +52,6 @@
 // //     next()
 // //   })
 // // })
-
 // // create schedule (creates user and schedule)
 // app.post("/create_user", async function (req, res) {
 //   // check if valid data
@@ -77,15 +61,12 @@
 //     res.send({ code: "invalid username" })
 //     return
 //   }
-
 //   // generate orgToken (same as user uid)
 //   const orgToken = uuidv4()
-
 //   auth
 //     .createCustomToken(orgToken)
 //     .then(async (authToken) => {
 //       // successfully generated firebase token
-
 //       // create org document
 //       const docRef = db.doc("organisations/"+ orgToken)
 //       docRef.set({
@@ -105,7 +86,6 @@
 //       res.statusCode = 500
 //       res.send({ code: "Error while creating user" })
 //     });
-
 // })
 // const isFileValid = (file: any) => {
 //   const type = file.type.split("/").pop();
@@ -115,11 +95,9 @@
 //   }
 //   return true;
 // };
-
 // const MAX_BYTES = 10 * 1024 *1024
 // // upload file to org
 // app.post("/upload_file", async function (req, res) {
-
 //   console.log("cool")
 //   // const form = formidable({ maxFileSize: MAX_BYTES, filter: function ({name, originalFilename, mimetype}) {
 //   //   // keep only pdfs
@@ -131,31 +109,12 @@
 //   // try {
 //   //   const [fields, files] = await form.parse(req)
 //   //   res.json({ fields, files });
-
 //   // }  catch (err) {
 //   //     console.log("erroring")
 //   //     res.statusCode = 413
 //   //     res.json({code: "File is too large"})
 //   //   }
 //   });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //   // res.status(403).end();
 //   // throw Error("error")
 //   // req.on("data", (chunk) => {
@@ -167,7 +126,6 @@
 //   //   paused = true
 //   //   console.log("paused")
 //   //   if (!paused) {
-      
 //   //   res.statusCode = 300
 //   //   res.send()
 //   //   }
@@ -213,8 +171,6 @@
 //   //       res.end(`<html><body><ul>${out}</ul></body></html>`);
 //   //   })
 //   //   return req.pipe(bb);
-
-
 //   // var bb = busboy({
 //   //   headers: req.headers,
 //   //   limits: {
@@ -223,7 +179,6 @@
 //   //   }
 //   // });
 //   // var saveTo = path.join(__dirname, 'uploads', Math.random() + '.jpg');
-
 //   // bb.on('file', function(fieldname:any, file:any, filename:any, encoding:any, mimetype:any) {
 //   //   // file.on('limit', function() {
 //   //     console.log('limit reached!');
@@ -238,44 +193,35 @@
 //   //    res.writeHead(200, {'Connection': 'close'});
 //   //    res.end();
 //   // });
-
 //   // // This doesn't work without piping here, but also always returns 200
 //   // return req.pipe(bb);
 // // return req.socket.destroy()
-
 //     // req.pause()
 //     // res.statusCode = 400;
 //     // res.end('upload limit exceeded');
 //       // @ts-ignore
 //   // var path = path + "/uploads"
 //   //   var maxSize = 3146000; // 3MB
-
 //   //   var options = {uploadDir: path};
 //   //   var form = formidable()
-
 //   //   form.on('error', function(message) {
 //   //       // res.statusCode = 413;
 //   //       // res.send('Upload too large');
 //   //       // res.end();
 //   //   });
-
-
 //   //   form.on('fileBegin', (formname, file) => {
 //   //     // this.emit("error")
 //   //     // @ts-ignore
 //   //     form._error("error 101")
 //   //   });
-
 //   //   try {
 //   //       const [fields, files] = await form.parse(req);
-
 //   //   } catch (err: any) {
 //   //       // example to check for a very specific error
 //   //       console.error(err);
 //   //       // req.socket.end();
 //   //       // req.destroy()
 //   //       // res.writeHead(err.httpCode || 400, { 'Content-Type': 'text/plain' });
-        
 //   //       // console.error("ned");
 //   //       // return res.end(String(err));;
 //   //   }
@@ -286,23 +232,10 @@
 //   //  req.socket.end();
 //   //  return res.end();
 //   // req.socket._destroy("eer", (er) => {console .log(er)})
-  
 //   // res.status(500).send('some error')
 //     // res.json({ fields, files });
 //     // req.destroy()
 //     // return res.end();
-
-
-
-
-
-
-
-
-
-
-
-
 // //   const form = formidable({ maxFileSize: 1024 * 1024 * 0, filter: function ({name, originalFilename, mimetype}) {
 // //     // keep only images
 // //     console.log("destroying...")
@@ -317,7 +250,6 @@
 // //     if (bytesReceived > 1 *1024 *1024)
 // //     {
 // //         console.log ('*** TOO BIG');
-
 // //         // ***HACK*** see Formidable lib/incoming_form.js
 // //         // forces close files then triggers error in form.parse below
 // //         // bonus: removes temporary files
@@ -327,7 +259,6 @@
 // //         // @ts-ignore
 // //         form._error (new Error ('too big'));
 // //         // req.destroy()
-
 // //         //req.connection.destroy (); --- moved to form.parse
 // //     }
 // // });
@@ -340,22 +271,16 @@
 // //     res.json({ fields, files });
 // //   });
 //   // form.removeAllListeners()
-  
 //   // res.statusCode = 400
 //   // res.send("bitch error")
-    
 //   //   // Check if multiple files or a single file
 //   // if (!files.myFile.length) {
 //   //   //Single file
-
 //   //   const file = files.myFile;
-
 //   //   // checks if the file is valid
 //   //   const isValid = isFileValid(file);
-
 //   //   // creates a valid name by removing spaces
 //   //   const fileName = encodeURIComponent(file.name.replace(/\s/g, "-"));
-
 //   //   if (!isValid) {
 //   //     // throes error if file isn't valid
 //   //     return res.status(400).json({
@@ -369,7 +294,6 @@
 //   //   } catch (error) {
 //   //     console.log(error);
 //   //   }
-
 //   //   try {
 //   //     // stores the fileName in the database
 //   //     return res.status(200).json({
@@ -384,17 +308,12 @@
 //   // } else {
 //   //   // Multiple files
 //   // }
-
-
-
-
 //   // try {
 //   //   if (!req.file || !req.body.username || req.body.username.length < 3 || !req.body.orgToken) {
 //   //     //If the file is not uploaded, then throw custom error with message: FILE_MISSING
 //   //     throw Error("File is missing");
 //   //   } else {
 //   //       const file = req.file;
-  
 //   //   const path = "uploads/" + file.filename;
 //   //     //If the file is uploaded, then send a success response.
 //   //     const success = await calculate(path, req.body.username, req.body.orgToken)
@@ -417,7 +336,6 @@
 //   //   }
 //   // }
 // // });
-
 // // app.use((req, res, next) => {
 // 	// const form = formidable({maxFileSize: 2.5*1024*1024, uploadDir: uploadDirectory});
 // 	// form.parse(req, (err, body, files) => {
@@ -427,7 +345,6 @@
 // 	// 	next();
 // 	// });
 // // });
-
 // app.get('/', (req, res) => {
 //   res.sendFile(path.join(__dirname, '/index.html'));
 //   // res.send(`
@@ -451,40 +368,32 @@
 //   //   } else if (err.message === "INVALID_PDF") {
 //   //     res.statusCode = 400;
 //   //     res.send({ code: "INVALID_PDF" });
-      
 //   //   }  else {
 //   //     console.log(err)
 //   //     //For any other errors set code as GENERIC_ERROR
 //   //     res.statusCode = 500;
 //   //     res.send({ code: "GENERIC_ERROR" });
 //   //   }   
-  
 // });
-
 // const conn: any = {}
 // //Start the server in port 8081
 // const server = app.listen(8082, function () {
 //   // @ts-ignore
 //   const port = server.address().port;
-
 //   console.log("App started at http://localhost:%s", port);
 // });
-
 //   // client.on('data', (chunk) => {
 //   //   console.log("chunk")
 //   //   const data = chunk.toString()
 //   //     // new request with headers
-
 //   //     let reqBuffer = new Buffer('');
 //   //   // Set up a temporary buffer to read in chunks
 //   //   let buf: any;
 //   //   let reqHeader: any;
 //   //     // Read data from the socket
 //   //     buf = chunk
-
 //   //     // Concatenate existing request buffer with new data
 //   //     reqBuffer = Buffer.concat([reqBuffer, buf]);
-
 //   //     // Check if we've reached \r\n\r\n, indicating end of header
 //   //     let marker = reqBuffer.indexOf('\r\n\r\n')
 //   //     if (marker !== -1) {
@@ -494,7 +403,6 @@
 //   //       reqHeader = reqBuffer.slice(0, marker).toString();
 //   //       // This pushes the extra data we read back to the socket's readable stream
 //   //       console.log(`Request header:\n${reqHeader}`);
-
 //   //   // 
 //   //   // 
 //   //    /* Request-related business */
@@ -531,52 +439,35 @@
 //   //       console.log("request too large !")
 //   //     }
 //   //     }
-    
 //   //   console.log("oo")
 //   //   // console.log("chunk", JSON.parse(chunk.toString()))
 //   //   // console.log("result", data.search("Content-Length"))
 //   //   // console.log("result2", data.indexOf("Content-Length"))
 //   //   // console.log("result3", data.slice(data.indexOf("Content-Length")+String("Content-Length").length, data.indexOf("Content-Length")+String("Content-Length").length+10))
-    
 //   // })
-
-
-
 // // import express from "express";
 // // import fileUpload from "express-fileupload";
 // // import path from "path";
-
 // // const __dirname = path.resolve(path.dirname(''));
-
 // // const app = express();
-
-
 // // app.use(
 // //   fileUpload({
 // //     createParentPath: true,
-
 // //     limits: {
 // //       fileSize: 1024 * 1024 * 10 // 10 MB
 // //   },
 // //   abortOnLimit: true
-
 // //   })
 // // );
-
-
-
 // // app.get("/", (req, res) => {
 // //   res.sendFile(path.join(__dirname, "index.html"));
 // // });
-
-
 // // app.post("/upload", (req, res) => {
 // //   if (!req.files) {
 // //     return res.status(400).send("No files were uploaded.");
 // //   }
 // //   const file = req.files.myFile;
 // //   const path = "files/" + file.name;
-
 // //   file.mv(path, (err) => {
 // //     if (err) {
 // //       console.log("error", err)
@@ -585,13 +476,9 @@
 // //     return res.send({ status: "success", path: path });
 // //   })
 // // });
-
-
 // // app.listen(3000, () => {
 // //   console.log(`Example app listening on port ${3000}`)
 // // }) 
-
-
 // // // import multer from "multer"
 // // // import  express from "express"
 // // // const storage = multer.diskStorage({
@@ -615,7 +502,6 @@
 // // //     }
 // // //       res.send(file);
 // // //   })
-
 // // // server.listen(port, () => {
 // // //   console.log(`Example app listening on port ${port}`)
 // // // }) 
