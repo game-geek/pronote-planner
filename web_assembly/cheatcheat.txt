@@ -1,0 +1,8 @@
+# Activate PATH and other environment variables in the current terminal
+source ./emsdk_env.sh
+
+// can just import the hello3.js module
+
+
+emcc --bind bindings/SampleBindings.cpp -Icpp/ cpp/*.cpp -s WASM=1 -s MODULARIZE=1 -o Sample.js
+https://guptanikhil.medium.com/using-webassembly-with-react-from-scratch-fba8cdfa5118
