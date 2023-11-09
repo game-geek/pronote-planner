@@ -1,0 +1,4 @@
+.user:hover {
+    text-decoration: line-through red 2px;
+    cursor: pointer;
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>lol</p>
+    <form action="127.0.0.1:8081/upload_file" enctype="multipart/form-data" method="POST">
+        <input type="file" class="admin__input" id="myFile" name="myFile" />
+        <input class="admin__submit" type="submit" />
+    </form>
+    <script>
+        const form = document.querySelector("form")
+        form.addEventListener("submit", (e) => {
+            console.log("starting")
+            e.preventDefault()
+            const formData = new FormData(form)
+            fetch("https://hip-apples-happen.loca.lt/upload_file", {
+                method: "post",
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                body: formData
+            }).then(response => console.log(response)).catch(error => console.log(error))
+        })
+    </script>
+</body>
+</html>
