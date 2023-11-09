@@ -49,6 +49,7 @@ var compression_1 = __importDefault(require("compression"));
 var helmet_1 = __importDefault(require("helmet"));
 var express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 var fs_1 = __importDefault(require("fs"));
+require('dotenv').config();
 var UPLOAD_DIR = __dirname + "/../uploads";
 if (!fs_1.default.existsSync(UPLOAD_DIR)) {
     fs_1.default.mkdirSync(UPLOAD_DIR);
@@ -186,7 +187,7 @@ app.post("/upload_file", function (req, res) {
     });
 });
 //Start the server in port 8081
-var server = app.listen(8080, function () {
+var server = app.listen(process.env.PORT, function () {
     // @ts-ignore
     var port = server.address().port;
     console.log("App started at http://localhost:%s", port);

@@ -8,6 +8,7 @@ import compression from "compression";
 import helmet from "helmet";
 import RateLimit from "express-rate-limit";
 import fs from "fs"
+require('dotenv').config()
 
 const UPLOAD_DIR = __dirname + "/../uploads" 
 if (!fs.existsSync(UPLOAD_DIR)){
@@ -142,7 +143,7 @@ app.post("/upload_file", async function (req, res) {
 
 
 //Start the server in port 8081
-const server = app.listen(8080, function () {
+const server = app.listen(process.env.PORT, function () {
   // @ts-ignore
   const port = server.address().port;
 
