@@ -13,6 +13,9 @@ import busboy from 'busboy';
 import http from "http"
 import net from "net"
 import { Socket } from "dgram";
+import compression from "compression";
+import helmet from "helmet";
+import RateLimit from "express-rate-limit";
 // var contentType = require('content-type')
 // var getRawBody = require('raw-body')
 
@@ -66,6 +69,21 @@ import { Socket } from "dgram";
 
 
 const app = express();
+app.set('trust proxy', 1)
+app.use(compression()); // Compress all routes
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "script-src": ["'self'"],
+    },
+  }),
+);
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20,
+});
+// Apply rate limiter to all requests
+app.use(limiter);
 //Add the client URL to the CORS policy
 const whitelist = ["http://localhost:3000", "https://lovely-toys-listen.loca.lt/"];
 const corsOptions = {
@@ -116,7 +134,7 @@ app.use(express.json());
 // //     next()
 // //   })
 // // })
-
+app.get('/ip', (request, response) => response.send(request.ip))
 // create schedule (creates user and schedule)
 app.post("/create_user", async function (req, res) {
   // check if valid data
