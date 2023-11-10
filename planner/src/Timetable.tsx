@@ -45,7 +45,7 @@ function TimeTable() {
     //Clear the error message
     setError("");
     axiosInstance
-      .post(process.env.SERVER + "/upload_file", formData, {
+      .post("https://pronote-planner-backend.onrender.com" + "/upload_file", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

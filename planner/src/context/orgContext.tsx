@@ -203,7 +203,7 @@ function OrgContextProvider({children}: {children: any}) {
     }
 
     async function firebase_create_account(username: string) {
-      const response = await fetch(process.env.SERVER + "/create_user", {method: 'post', headers: {
+      const response = await fetch("https://pronote-planner-backend.onrender.com" + "/create_user", {method: 'post', headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }, body: JSON.stringify({username})})

@@ -133,7 +133,7 @@ app.post("/upload_file", async function (req, res) {
     res.json({ fields, files });
 
   }  catch (err) {
-      console.log("erroring")
+      console.log("erroring", err)
       res.statusCode = 413
       res.json({code: "File is too large"})
     }
