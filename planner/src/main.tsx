@@ -6,6 +6,7 @@ import './index.css'
 import m from './web_assembly/hello3.js'
 import { BrowserRouter } from 'react-router-dom'
 import OrgContextProvider from './context/orgContext.tsx'
+require('dotenv').config()
 m().then(function(Module: any) {
   // @ts-ignore
   const ccallArrays = (func, returnType, paramTypes=[], params, {heapIn="HEAPF32", heapOut="HEAPF32", returnArraySize=1}={}) => {
