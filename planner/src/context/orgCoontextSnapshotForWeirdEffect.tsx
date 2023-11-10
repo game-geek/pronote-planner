@@ -1,6 +1,6 @@
 import { Unsubscribe, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { createContext, useEffect, useState } from "react";
-import db from "../firebase";
+import {db} from "../firebase";
 import { redirect, useNavigate } from "react-router-dom";
 export type availableTimeType = {
 	time: string,

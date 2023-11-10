@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+// @ts-ignore
 import m from './web_assembly/hello3.js'
 import { BrowserRouter } from 'react-router-dom'
 import OrgContextProvider from './context/orgContext.tsx'

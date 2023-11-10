@@ -143,7 +143,7 @@ app.post("/upload_file", async function (req, res) {
 
 
 //Start the server in port 8081
-const server = app.listen(process.env.PORT, function () {
+const server = app.listen(process.env.PORT || 8080, function () {
   // @ts-ignore
   const port = server.address().port;
 

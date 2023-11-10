@@ -116,6 +116,7 @@ const Dashboard = () => {
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel={"Example Modal" } 
+                // @ts-ignore
                 style={customStyles}
             >
                 <h1>Are you sure you want to delete this user's timetable ?</h1>

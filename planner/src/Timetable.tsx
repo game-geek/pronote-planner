@@ -44,7 +44,7 @@ function TimeTable() {
     //Clear the error message
     setError("");
     axiosInstance
-      .post("https://curvy-masks-clean.loca.lt/upload_file", formData, {
+      .post("https://musical-yodel-4969gqvg54xcjpxg-8081.preview.app.github.dev/upload_file", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
