@@ -177,7 +177,7 @@ app.post("/upload_file", function (req, res) {
                     return [3 /*break*/, 7];
                 case 6:
                     err_1 = _b.sent();
-                    console.log("erroring");
+                    console.log("erroring", err_1);
                     res.statusCode = 413;
                     res.json({ code: "File is too large" });
                     return [3 /*break*/, 7];
@@ -187,7 +187,7 @@ app.post("/upload_file", function (req, res) {
     });
 });
 //Start the server in port 8081
-var server = app.listen(process.env.PORT, function () {
+var server = app.listen(process.env.PORT || 8080, function () {
     // @ts-ignore
     var port = server.address().port;
     console.log("App started at http://localhost:%s", port);
