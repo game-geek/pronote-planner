@@ -187,7 +187,7 @@ var ORGANAISATIONS_LISTENER = [];
 init();
 // function called from endpoint
 var calculate = function (path, username, orgToken) { return __awaiter(void 0, void 0, void 0, function () {
-    var documentRef, doc_1, dataBuffer, pdfInfo, pdfArray, img, canvas, ctx, x_spaces, y_spaces, targets, y, temp, x, results, y, temp, x, data, userOrgDocRef, unsubscribe, buffer, error_1;
+    var documentRef, doc, dataBuffer, pdfInfo, pdfArray, img, canvas, ctx, x_spaces, y_spaces, targets, y, temp, x, results, y, temp, x, data, userOrgDocRef, unsubscribe, buffer, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -195,8 +195,8 @@ var calculate = function (path, username, orgToken) { return __awaiter(void 0, v
                 documentRef = firebase_1.db.doc("organisations/" + orgToken);
                 return [4 /*yield*/, documentRef.get()];
             case 1:
-                doc_1 = _a.sent();
-                if (!doc_1.exists) {
+                doc = _a.sent();
+                if (!doc.exists) {
                     // problem
                     return [2 /*return*/, "this schedule does not exist"];
                 }

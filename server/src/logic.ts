@@ -1,4 +1,3 @@
-import { onSnapshot, collection, addDoc, updateDoc , doc, setDoc, getDocs} from "firebase/firestore";
 import {db} from "./firebase"
 import fs from "fs";
 //@ts-ignore
