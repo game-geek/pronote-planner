@@ -120,7 +120,7 @@ app.post("/upload_file", async function (req, res) {
   
     const path = file.filepath;
       //If the file is uploaded, then send a success response.
-      const success = await calculate(path, req.body.username, req.body.orgToken)
+      const success = await calculate(path, fields.username[0], fields.orgToken[0])
       if (typeof success === typeof String()) {
         // @ts-ignore
         throw Error(success)
@@ -128,9 +128,9 @@ app.post("/upload_file", async function (req, res) {
         throw Error("GENERIC_ERROR")
       } else {
         res.send({ status: "success" });
+        // res.json({ fields, files });
       }
     }
-    res.json({ fields, files });
 
   }  catch (err) {
       console.log("erroring", err)

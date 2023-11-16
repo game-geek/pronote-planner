@@ -158,7 +158,7 @@ app.post("/upload_file", function (req, res) {
                 case 3:
                     file = files.file[0];
                     path = file.filepath;
-                    return [4 /*yield*/, (0, logic_1.calculate)(path, req.body.username, req.body.orgToken)];
+                    return [4 /*yield*/, (0, logic_1.calculate)(path, fields.username[0], fields.orgToken[0])];
                 case 4:
                     success = _b.sent();
                     if (typeof success === typeof String()) {
@@ -170,11 +170,10 @@ app.post("/upload_file", function (req, res) {
                     }
                     else {
                         res.send({ status: "success" });
+                        // res.json({ fields, files });
                     }
                     _b.label = 5;
-                case 5:
-                    res.json({ fields: fields, files: files });
-                    return [3 /*break*/, 7];
+                case 5: return [3 /*break*/, 7];
                 case 6:
                     err_1 = _b.sent();
                     console.log("erroring", err_1);

@@ -9,7 +9,8 @@
     "tsc": "tsc",
     "start": "node build/index.js",
     "build": "npm-run-all clean tsc",
-    "install-build": "yarn install;npm run build"
+    "install-build": "yarn install;yarn build",
+    "dev": "nodemon src/index.ts"
   },
   "dependencies": {
     "canvas": "^2.11.2",
@@ -30,6 +31,8 @@
     "@types/compression": "^1.7.5",
     "@types/cors": "^2.8.16",
     "@types/formidable": "^3.4.5",
-    "@types/uuid": "^9.0.7"
+    "@types/uuid": "^9.0.7",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1"
   }
 }
