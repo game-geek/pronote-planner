@@ -49,7 +49,12 @@ var compression_1 = __importDefault(require("compression"));
 var helmet_1 = __importDefault(require("helmet"));
 var express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 var fs_1 = __importDefault(require("fs"));
+var encryption_1 = require("./encryption");
+var body_parser_1 = __importDefault(require("body-parser"));
+// console.log(path.resolve(process.cwd(), '.env'))
+// console.log(path.resolve(process.cwd(), '.env'))
 require('dotenv').config();
+// console.log(process.env.ENCRYPTION_KEY)
 var UPLOAD_DIR = __dirname + "/../uploads";
 if (!fs_1.default.existsSync(UPLOAD_DIR)) {
     fs_1.default.mkdirSync(UPLOAD_DIR);
@@ -83,6 +88,26 @@ var corsOptions = {
 };
 app.use((0, cors_1.default)(corsOptions));
 app.use(express_1.default.json());
+app.post("/_encrypt", body_parser_1.default.json(), function (request, response) {
+    var data = request.body.data;
+    if (!data || data.length < 500 || data.length > 1000) {
+        response.statusCode = 400;
+        response.json({ code: "invalid key" });
+        return console.log("invlid key length or unexistant");
+    }
+    var encryptedText = (0, encryption_1.encrypt)(data);
+    response.json({ data: encryptedText });
+});
+app.post("/_decrypt", body_parser_1.default.json(), function (request, response) {
+    var data = request.body.data;
+    if (!data || data.length < 1000 || data.length > 2000) {
+        response.statusCode = 400;
+        response.json({ code: "invalid key" });
+        return console.log("invlid key length or unexistant");
+    }
+    var decryptedText = (0, encryption_1.decrypt)(data);
+    response.json({ data: decryptedText });
+});
 app.get('/ip', function (request, response) { return response.send(request.ip); });
 // create schedule (creates user and schedule)
 app.post("/create_user", function (req, res) {
@@ -131,7 +156,7 @@ var MAX_BYTES = 10 * 1024 * 1024;
 // upload file to org
 app.post("/upload_file", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var form, _a, fields, files, file, path, success, err_1;
+        var form, _a, fields, files, file, path_1, success, err_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -157,8 +182,8 @@ app.post("/upload_file", function (req, res) {
                     return [3 /*break*/, 5];
                 case 3:
                     file = files.file[0];
-                    path = file.filepath;
-                    return [4 /*yield*/, (0, logic_1.calculate)(path, fields.username[0], fields.orgToken[0])];
+                    path_1 = file.filepath;
+                    return [4 /*yield*/, (0, logic_1.calculate)(path_1, fields.username[0], fields.orgToken[0])];
                 case 4:
                     success = _b.sent();
                     if (typeof success === typeof String()) {

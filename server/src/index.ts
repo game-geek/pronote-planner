@@ -8,8 +8,13 @@ import compression from "compression";
 import helmet from "helmet";
 import RateLimit from "express-rate-limit";
 import fs from "fs"
+import { decrypt, encrypt } from "./encryption";
+import bodyParser from "body-parser";
+import path from "path"
+// console.log(path.resolve(process.cwd(), '.env'))
+// console.log(path.resolve(process.cwd(), '.env'))
 require('dotenv').config()
-
+// console.log(process.env.ENCRYPTION_KEY)
 const UPLOAD_DIR = __dirname + "/../uploads" 
 if (!fs.existsSync(UPLOAD_DIR)){
   fs.mkdirSync(UPLOAD_DIR);
@@ -50,6 +55,27 @@ app.use(cors(corsOptions));
 
 
 app.use(express.json());  
+
+app.post("/_encrypt", bodyParser.json(), (request, response) => {
+  const data = request.body.data
+  if (!data || data.length < 500 || data.length > 1000) {
+    response.statusCode = 400
+    response.json({code: "invalid key"})
+    return console.log("invlid key length or unexistant")
+  }
+ const encryptedText = encrypt(data)
+ response.json({data: encryptedText})
+})
+app.post("/_decrypt", bodyParser.json(), (request, response) => {
+  const data = request.body.data
+  if (!data || data.length < 1000 || data.length > 2000) {
+    response.statusCode = 400
+    response.json({code: "invalid key"})
+    return console.log("invlid key length or unexistant")
+  }
+ const decryptedText = decrypt(data)
+ response.json({data: decryptedText})
+})
 
 
 app.get('/ip', (request, response) => response.send(request.ip))
