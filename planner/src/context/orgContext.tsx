@@ -3,7 +3,8 @@ import { createContext, useEffect, useState } from "react";
 import {db, auth} from "../firebase";
 import { redirect, useNavigate } from "react-router-dom";
 import { OrgContextType, OrgType } from "../lib/formatTimeTable";
-import { signInWithCustomToken } from "firebase/auth";
+import { onAuthStateChanged, signInWithCustomToken, signOut } from "firebase/auth";
+import { BACKEND_URL } from "../lib/constants";
 
 // CLEAR DB !!! 11/10
 export const OrgContext = createContext<OrgContextType>({
@@ -13,8 +14,12 @@ export const OrgContext = createContext<OrgContextType>({
   LogOut: () => {},
   SignUp: (username: string) => {},
   pending: false,
-  error: null
+  error: null,
+  userTokens: null,
+  authIsReady: false
 });
+
+// FIREBASE DOESNT RECOGNISE TOKEN ???? bug
 
 
 let LISTENER: null | Unsubscribe = null 
@@ -24,20 +29,53 @@ function OrgContextProvider({children}: {children: any}) {
     const [scheduleData, updateScheduleData] = useState<OrgType | null>(null);
     const [pending, setPending] = useState<boolean>(false);
     const [error, setError] = useState<null | string>(null);
-    let navigate = useNavigate();
+    const [userTokens, setUserTokens] = useState<null | [string, string]>(null)
+    const [authIsReady, setAuthIsReady] = useState<boolean>(false)
+    const navigate = useNavigate();
     
     
     useEffect(() => {
-      const token = localStorage.getItem("__t__")
-      if (token !== null) {
-        // token exists
-        // verify and log in
-        LogIn(token)
-      }
+      const fnc = async () => {
+          const unsub = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+              // loged in
+              try {
+                const encryptedToken = localStorage.getItem("__t__")
+                if (encryptedToken !== null) {
+                  // token exists
+                  // decrypt token
+                  const res = await fetch(BACKEND_URL + "/_decrypt", {
+                    method: "post",
+                    body: JSON.stringify({data: encryptedToken}),
+                    headers: {
+                      "Content-type": "application/json; charset=UTF-8"
+                    }
+                  })
+                  if (!res.ok) throw Error("error while decrypting")
+      
+                  const data = await res.json()
+                  // verify and log in
+                  // await LogIn(data.data)
+                  // set token credentials
+                  setUserTokens(data.data.split(":"))
+                }
+              } catch (error) {
+                // error while decrypting token
+                console.log("error while decrypting token: ", error)
+              }
+            } else {
+              // no user
+              // delete token just in case
+              localStorage.removeItem("__t__")
+            }
+            setAuthIsReady(true)
+          })
+          unsub()
+        }
+      fnc()
     }, [])
 
     async function LogIn(token: string) {
-      localStorage.removeItem("__t__")
       setError(null)
       setPending(true)
       const tokens = token.split(":")
@@ -60,15 +98,23 @@ function OrgContextProvider({children}: {children: any}) {
       console.log(auth.currentUser)
       // need to add custom auth in firebase dashboard settings
       if (response == true) {
+        // @ts-ignore
+        // don't need to remove the old one because it replaces it
+        const success = await setLocalStorageToken(tokens)
+        if (!success) {
+          console.log("error while trying to store token")
+          setError("error 10 while loging in, please retry")
+          setPending(false)
+        }
         //succesfull
         startAccountListener(tokens[0])
-        localStorage.setItem("__t__", token)
+        // @ts-ignore
+        setUserTokens(tokens)
       } 
       setPending(false)
     }
 
     async function SignUp(username: string) {
-      localStorage.removeItem("__t__")
       setError(null)
       setPending(true)
       if (!username|| username.length < 3) {
@@ -86,7 +132,12 @@ function OrgContextProvider({children}: {children: any}) {
       }
       updateScheduleData(null)
       // try to login, and listen to updates
-      const tokens = await firebase_create_account(username)
+      let tokens = await firebase_create_account(username)
+      if (!tokens) {
+        // error while creating account
+            setError("error 9 while creating account, please retry")
+            setPending(false)
+      }
       // need to add custom auth in firebase dashboard settings
       if (tokens && tokens.length === 2) {
         //succesfull
@@ -98,14 +149,43 @@ function OrgContextProvider({children}: {children: any}) {
         if (loggued) {
           console.log("loggued")
           if (tokens[0]) {
+            // don't need to remove the old one because it replaces it
+            const success = await setLocalStorageToken(tokens)
+            if (!success) {
+              // error while storing token
+              setError("error 10 while loging in, please retry")
+              setPending(false)
+              return
+            }
             // succesfull
+            setUserTokens(tokens)
             startAccountListener(tokens[0])
-            localStorage.setItem("__t__", tokens[0] + ':' + tokens[1])
           }
         
         } 
       }
       setPending(false)
+    }
+
+    async function setLocalStorageToken (tokens: [string, string]) {
+      try  {
+        console.log("df token:", tokens)
+        const res = await fetch(BACKEND_URL + "/_encrypt", {
+          method: "post",
+          body: JSON.stringify({data: tokens[0] + ":" + tokens[1]}),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8"
+          }
+        })
+        if (!res.ok) return false
+        const encryptedToken: { data: string } = await res.json()
+        console.log("tr token:", encryptedToken)
+        localStorage.setItem("__t__", encryptedToken.data)
+        return true
+      } catch (error) {
+        console.log(error)
+        return error
+      }
     }
 
     function startAccountListener(token: string) {
@@ -192,18 +272,20 @@ function OrgContextProvider({children}: {children: any}) {
     // }
     // }
 
-    function LogOut() {
+    async function LogOut() {
       localStorage.removeItem("__t__")
       if (LISTENER) {
         LISTENER()
         LISTENER = null
       }
       updateScheduleData(null)
+      setUserTokens(null)
+      await signOut(auth)
       navigate("/")
     }
 
-    async function firebase_create_account(username: string) {
-      const response = await fetch("https://pronote.adaptable.app" + "/create_user", {method: 'post', headers: {
+    async function firebase_create_account(username: string): Promise<false | [string, string]> {
+      const response = await fetch(BACKEND_URL + "/create_user", {method: 'post', headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }, body: JSON.stringify({username})})
@@ -238,7 +320,7 @@ function OrgContextProvider({children}: {children: any}) {
     }
 
     return (
-      <OrgContext.Provider value={{scheduleData, updateScheduleData, SignUp, LogIn, LogOut, error, pending}}>
+      <OrgContext.Provider value={{scheduleData, updateScheduleData, SignUp, LogIn, LogOut, error, pending, userTokens, authIsReady}}>
         {children}
       </OrgContext.Provider>
     );

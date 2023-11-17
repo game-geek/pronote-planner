@@ -17,4 +17,6 @@ export type OrgContextType = {
   SignUp: (username: string) => any;
   error: string | null;
   pending: boolean;
+  userTokens: null | [string, string];
+  authIsReady: boolean;
 }

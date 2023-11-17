@@ -5,6 +5,7 @@ import {db} from "./firebase";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { OrgContext } from "./context/orgContext";
 import { OrgType } from "./lib/formatTimeTable";
+import { BACKEND_URL } from "./lib/constants";
 
 function TimeTable() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -45,7 +46,7 @@ function TimeTable() {
     //Clear the error message
     setError("");
     axiosInstance
-      .post("https://pronote.adaptable.app" + "/upload_file", formData, {
+      .post(BACKEND_URL + "/upload_file", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import styles from "./Dashboard.module.css"
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import {auth, db} from "./firebase";
+import { useNavigate } from "react-router-dom";
 
 const customStyles = {
     content: {
@@ -19,11 +20,24 @@ const customStyles = {
     }
   };
 const Dashboard = () => {
-    const {LogOut, scheduleData} = useContext(OrgContext)
+    const {LogOut, scheduleData, userTokens, authIsReady} = useContext(OrgContext)
     const [canUpdate, setCanUpdate] = useState<boolean>(false)
     const ref = useRef(null)
     const [modalIsOpen, setIsOpen] = useState(false);
     const [user, setUser] = useState("")
+    const navigate = useNavigate();
+
+    const [credentialModalOpen, setCredentialModalOpen] = useState<boolean>(false)
+    const [logoutWarningModalOpen, setLogoutWarningModalOpen] = useState<boolean>(false)
+
+    useEffect(() => {
+        console.log(userTokens)
+        if (!userTokens && authIsReady) {
+            // no user
+            console.log("redirecting")
+            navigate("/")
+        }
+    }, [userTokens, authIsReady])
 
     function handleDeleteUser() {
         setIsOpen(false)
@@ -86,10 +100,14 @@ const Dashboard = () => {
     function closeModal() {
         setIsOpen(false);
       }
+      function copyToClipBoard (text: string) {
+        navigator.clipboard.writeText(text);
+      }
 
     return (
         <>
-            <button onClick={LogOut}>Logout</button>
+            <button onClick={() => setLogoutWarningModalOpen(true)}>Logout</button>
+            <button onClick={() => setCredentialModalOpen(true)}>show account credentials</button>
             {(scheduleData && scheduleData.free) && <form ref={ref} onChange={handleChange} onSubmit={handleSubmit}>
                 {canUpdate && <button type="submit">show selected times to everybody</button>}
                 <table>
@@ -122,6 +140,34 @@ const Dashboard = () => {
                 <h1>Are you sure you want to delete this user's timetable ?</h1>
                 <button style={{marginRight: 20}} type="button" onClick={() => setIsOpen(false)}>Cancel</button>
                 <button style={{backgroundColor: "red"}} type="button" onClick={handleDeleteUser}>Delete</button>
+            </Modal>
+            {/* credentials modal */}
+            <Modal
+                isOpen={credentialModalOpen}
+                onRequestClose={() => setCredentialModalOpen(false)}
+                contentLabel={"Example Modal" } 
+                // @ts-ignore
+                style={customStyles}
+            >
+                <h2>Your credentials are not resetable, so please keep them extremely secret</h2>
+                
+                <p>note that your credentials are stored in localstorage</p>
+                <p>please allow clipboard settings</p>
+                <button style={{marginRight: 20}} type="button" onClick={() => copyToClipBoard(userTokens ? userTokens[0]+":"+userTokens[1] : "error - please signin")} >Copy to clipboard</button>
+                <button type="button"  onClick={() => setCredentialModalOpen(false)}>Close</button>
+            </Modal>
+            {/* logout warning modal */}
+            <Modal
+                isOpen={logoutWarningModalOpen}
+                onRequestClose={() => setLogoutWarningModalOpen(false)}
+                contentLabel={"Example Modal" } 
+                // @ts-ignore
+                style={customStyles}
+            >
+                <h1>Logout ?</h1>
+                <p>Insure you have your credentials stored safely</p>
+                <button style={{marginRight: 20, backgroundColor: "red"}} type="button"  onClick={LogOut} >Logout</button>
+                <button type="button"  onClick={() => setLogoutWarningModalOpen(false)}>Cancel</button>
             </Modal>
         </>
     )
