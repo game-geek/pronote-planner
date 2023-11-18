@@ -1,1 +1,1 @@
-export const BACKEND_URL = "https://express-test.adaptable.app"
+export const BACKEND_URL = "https://pronote.adaptable.app"
