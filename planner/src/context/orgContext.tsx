@@ -57,7 +57,11 @@ function OrgContextProvider({children}: {children: any}) {
                   // verify and log in
                   // await LogIn(data.data)
                   // set token credentials
-                  setUserTokens(data.data.split(":"))
+                  const tokens: [string, string] = data.data.split(":")
+                  setUserTokens(tokens)
+                  // start listener
+                  startAccountListener(tokens[0])
+
                 }
               } catch (error) {
                 // error while decrypting token
@@ -69,8 +73,8 @@ function OrgContextProvider({children}: {children: any}) {
               localStorage.removeItem("__t__")
             }
             setAuthIsReady(true)
+            unsub()
           })
-          unsub()
         }
       fnc()
     }, [])
@@ -95,7 +99,6 @@ function OrgContextProvider({children}: {children: any}) {
       updateScheduleData(null)
       // try to login, and listen to updates
       const response = await firebase_login(tokens[1], tokens[0])
-      console.log(auth.currentUser)
       // need to add custom auth in firebase dashboard settings
       if (response == true) {
         // @ts-ignore
@@ -142,10 +145,7 @@ function OrgContextProvider({children}: {children: any}) {
       if (tokens && tokens.length === 2) {
         //succesfull
         // signin
-        console.log("orgToken", tokens[0])
-        console.log("authToken", tokens[1])
         const loggued = await firebase_login(tokens[1], tokens[0])
-        console.log("user id", auth.currentUser)
         if (loggued) {
           console.log("loggued")
           if (tokens[0]) {
@@ -169,7 +169,6 @@ function OrgContextProvider({children}: {children: any}) {
 
     async function setLocalStorageToken (tokens: [string, string]) {
       try  {
-        console.log("df token:", tokens)
         const res = await fetch(BACKEND_URL + "/_encrypt", {
           method: "post",
           body: JSON.stringify({data: tokens[0] + ":" + tokens[1]}),
@@ -179,7 +178,6 @@ function OrgContextProvider({children}: {children: any}) {
         })
         if (!res.ok) return false
         const encryptedToken: { data: string } = await res.json()
-        console.log("tr token:", encryptedToken)
         localStorage.setItem("__t__", encryptedToken.data)
         return true
       } catch (error) {
@@ -291,11 +289,9 @@ function OrgContextProvider({children}: {children: any}) {
       }, body: JSON.stringify({username})})
       if (response.ok) {
         const data = await response.json()
-        console.log("token creation", data)
         return [data.orgToken, data.authToken]
       } else {
         const data = await response.json()
-        console.log("error token creation", data)
         setError(data.code)
         return false
       }

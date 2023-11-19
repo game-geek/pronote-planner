@@ -31,7 +31,6 @@ const Dashboard = () => {
     const [logoutWarningModalOpen, setLogoutWarningModalOpen] = useState<boolean>(false)
 
     useEffect(() => {
-        console.log(userTokens)
         if (!userTokens && authIsReady) {
             // no user
             console.log("redirecting")
