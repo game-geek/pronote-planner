@@ -113,6 +113,7 @@ function OrgContextProvider({children}: {children: any}) {
         startAccountListener(tokens[0])
         // @ts-ignore
         setUserTokens(tokens)
+        navigate("/dashboard")
       } 
       setPending(false)
     }
@@ -160,6 +161,7 @@ function OrgContextProvider({children}: {children: any}) {
             // succesfull
             setUserTokens(tokens)
             startAccountListener(tokens[0])
+            navigate("/dashboard")
           }
         
         } 
@@ -228,7 +230,6 @@ function OrgContextProvider({children}: {children: any}) {
             // set token in localstorage if there is a refresh
             loged = true
             // redirect to dashboard
-            navigate("/dashboard")
           }
         },
         error => {

@@ -10,7 +10,8 @@
     "start": "node build/index.js",
     "build": "npm-run-all clean tsc",
     "install-build": "yarn install;yarn build",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "delete-all-users": "ts-node deleteAllUsers.ts"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
