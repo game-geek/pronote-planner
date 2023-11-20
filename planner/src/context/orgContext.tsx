@@ -5,6 +5,7 @@ import { redirect, useNavigate } from "react-router-dom";
 import { OrgContextType, OrgType } from "../lib/formatTimeTable";
 import { onAuthStateChanged, signInWithCustomToken, signOut } from "firebase/auth";
 import { BACKEND_URL } from "../lib/constants";
+import { ToastContainer, toast } from "react-toastify";
 
 // CLEAR DB !!! 11/10
 export const OrgContext = createContext<OrgContextType>({
@@ -113,6 +114,8 @@ function OrgContextProvider({children}: {children: any}) {
         startAccountListener(tokens[0])
         // @ts-ignore
         setUserTokens(tokens)
+        
+        toast("✨ Welcome back")
         navigate("/dashboard")
       } 
       setPending(false)
@@ -161,6 +164,7 @@ function OrgContextProvider({children}: {children: any}) {
             // succesfull
             setUserTokens(tokens)
             startAccountListener(tokens[0])
+            toast("✨ Welcome back")
             navigate("/dashboard")
           }
         
@@ -319,6 +323,7 @@ function OrgContextProvider({children}: {children: any}) {
     return (
       <OrgContext.Provider value={{scheduleData, updateScheduleData, SignUp, LogIn, LogOut, error, pending, userTokens, authIsReady}}>
         {children}
+        <ToastContainer position="bottom-center" autoClose={3000} />
       </OrgContext.Provider>
     );
   }

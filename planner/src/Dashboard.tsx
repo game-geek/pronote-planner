@@ -5,6 +5,7 @@ import styles from "./Dashboard.module.css"
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import {auth, db} from "./firebase";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const customStyles = {
     content: {
@@ -99,15 +100,21 @@ const Dashboard = () => {
     function closeModal() {
         setIsOpen(false);
       }
-      function copyToClipBoard (text: string) {
+      function copyToClipBoard (text: string, message="copied !") {
         navigator.clipboard.writeText(text);
+        toast(message, {
+            autoClose: 2000,
+            hideProgressBar: true
+        })
       }
 
     return (
         <>
             <div style={{display: "flex", alignItems: "space-between", justifyContent: "space-between", marginLeft: 20 , marginRight: 20}}>
-                <p>Your add timetable url to share: {userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please sign in"}</p>
-                <button onClick={() => copyToClipBoard(userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please signin")}>Copy Share Url</button>
+                <p onClick={() => copyToClipBoard(userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please signin", "copied share url !")}>
+                    <strong>Your add timetable url to share:</strong> {userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please sign in"}
+                </p>
+                <button onClick={() => copyToClipBoard(userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please signin", "copied share url !")}>Copy Share Url</button>
             </div>
             <button onClick={() => setLogoutWarningModalOpen(true)}>Logout</button>
             <button onClick={() => setCredentialModalOpen(true)}>show account credentials</button>
@@ -142,7 +149,7 @@ const Dashboard = () => {
             >
                 <h1>Are you sure you want to delete this user's timetable ?</h1>
                 <button style={{marginRight: 20}} type="button" onClick={() => setIsOpen(false)}>Cancel</button>
-                <button style={{backgroundColor: "red"}} type="button" onClick={handleDeleteUser}>Delete</button>
+                <button style={{backgroundColor: "red", color: "white"}} type="button" onClick={handleDeleteUser}>Delete</button>
             </Modal>
             {/* credentials modal */}
             <Modal
@@ -155,8 +162,7 @@ const Dashboard = () => {
                 <h2>Your credentials are not resetable, so please keep them extremely secret</h2>
                 
                 <p>note that your credentials are stored in localstorage</p>
-                <p>please allow clipboard settings</p>
-                <button style={{marginRight: 20}} type="button" onClick={() => copyToClipBoard(userTokens ? userTokens[0]+":"+userTokens[1] : "error - please signin")} >Copy to clipboard</button>
+                <button style={{marginRight: 20}} type="button" onClick={() => copyToClipBoard(userTokens ? userTokens[0]+":"+userTokens[1] : "error - please signin", "copied your secret token !")} >Copy to clipboard</button>
                 <button type="button"  onClick={() => setCredentialModalOpen(false)}>Close</button>
             </Modal>
             {/* logout warning modal */}
@@ -169,7 +175,7 @@ const Dashboard = () => {
             >
                 <h1>Logout ?</h1>
                 <p>Insure you have your credentials stored safely</p>
-                <button style={{marginRight: 20, backgroundColor: "red"}} type="button"  onClick={LogOut} >Logout</button>
+                <button style={{marginRight: 20, backgroundColor: "red", color: "white"}} type="button"  onClick={LogOut} >Logout</button>
                 <button type="button"  onClick={() => setLogoutWarningModalOpen(false)}>Cancel</button>
             </Modal>
         </>

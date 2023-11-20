@@ -3,6 +3,8 @@ import { useContext, useEffect, useState } from "react"
 import {db} from "./firebase"
 import { OrgContext } from "./context/orgContext"
 import { useNavigate } from "react-router-dom"
+import { ToastContainer, toast } from "react-toastify"
+import Loader from "./Loader"
 
 export default  () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -25,9 +27,14 @@ export default  () => {
     useEffect(() => {
         //console.log(error, pending)
         if (start && !pending && error) {
-            alert(error)
+            // alert(error)
+            toast("❌ Error: "+error)
             setStart(false)
         }
+        // else if (start && !pending && !error) {
+        //     toast("✨ Welcome back")
+        //     setStart(false)
+        // }
     }, [pending])
     console.log(start, pending, error)
 
@@ -63,12 +70,14 @@ export default  () => {
                     <p>Modify/Manage schedule:</p>
                     <form onSubmit={handleSignin} style={{display: "flex", alignItems: "center", margin: "0 20px 0 20px", justifyContent: "space-between", flexDirection: "row"}}>
                         <input name="token" style={{minWidth: "20vw", height: 20, fontSize: 14}} type="text" placeholder="your secret schedule token" />
-                        <button>Log in</button>
+                        {pending && <Loader width="50px" height="50px" />}
+                        {!pending && <button>Log in</button>}
                     </form>
                     <p>Create new schedule:</p>
                     <form onSubmit={handleCreate} style={{display: "flex", alignItems: "center", margin: "0 20px 0 20px", justifyContent: "space-between", flexDirection: "row"}}>
                         <input name="username" style={{minWidth: "20vw", height: 20, fontSize: 14}} type="text" placeholder="your name" />
-                        <button>create a schedule</button>
+                        {pending && <Loader width="50px" height="50px" />}
+                        {!pending && <button>create a schedule</button>}
                     </form>
                 </div>}
         </div>
