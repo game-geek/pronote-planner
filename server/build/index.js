@@ -68,7 +68,7 @@ app.use(helmet_1.default.contentSecurityPolicy({
     },
 }));
 var limiter = (0, express_rate_limit_1.default)({
-    windowMs: 1 * 60 * 1000,
+    windowMs: 1 * 60 * 1000, // 1 minute
     max: 20,
 });
 // Apply rate limiter to all requests
@@ -178,7 +178,7 @@ app.post("/upload_file", function (req, res) {
                     if (!(!fields || !files.file || !fields.username || !fields.orgToken || fields.username[0].length < 3 || fields.orgToken[0].length < 10)) return [3 /*break*/, 3];
                     //If the file is not uploaded, then throw custom error with message: FILE_MISSING
                     res.statusCode = 400;
-                    res.end("Invalid Data");
+                    res.end("FILE_MISSING");
                     return [3 /*break*/, 5];
                 case 3:
                     file = files.file[0];
@@ -202,8 +202,16 @@ app.post("/upload_file", function (req, res) {
                 case 6:
                     err_1 = _b.sent();
                     console.log("erroring", err_1);
-                    res.statusCode = 413;
-                    res.json({ code: "File is too large" });
+                    switch (err_1.message) {
+                        case 'invalid pronote timetable':
+                            res.statusCode = 400;
+                            res.json({ code: "INVALID_PDF" });
+                            return [2 /*return*/];
+                        default:
+                            res.statusCode = 500;
+                            res.json({ code: "internal server error" });
+                            return [2 /*return*/];
+                    }
                     return [3 /*break*/, 7];
                 case 7: return [2 /*return*/];
             }

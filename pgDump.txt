@@ -1,0 +1,13 @@
+PGPASSWORD=9Mq0AgJwv9xtbEUrrmPDooSgiettCBsZ psql -h dpg-cle6vrnpc7cc73elqdl0-a.frankfurt-postgres.render.com -U admin everything_new
+pg_dump --host dpg-cjm7vtlk5scs73di5ck0-a.frankfurt-postgres.render.com --port 5432 --user admin  pca > backup_pca.sql
+install postgreql && postgreql-client (you dont need both): https://askubuntu.com/questions/1456014/how-to-upgrade-postgresql-from-14-to-15-on-ubuntu-22-04
+
+sudo su root
+PGPASSWORD=QbUjAygObQUeHhHETRXREuewmF4pnZ2z sudo -u postgres psql -h dpg-cjm7vtlk5scs73di5ck0-a.frankfurt-postgres.render.com -W -U admin main_m5l8
+
+https://snapshooter.com/learn/import-export-postgresql-database
+https://www.reddit.com/r/github/comments/117nl53/what_is_the_password_for_root_account_in_github/?rdt=51509
+https://stackoverflow.com/questions/20994194/error-must-be-superuser-to-alter-superusers
+https://stackoverflow.com/questions/26684643/error-must-be-member-of-role-when-creating-schema-in-postgresql
+
+final fix: changed owner (in error) to the current user (ex: in backup.sql, postgres -> admin)

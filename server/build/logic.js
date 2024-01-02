@@ -211,7 +211,7 @@ var calculate = function (path, username, orgToken) { return __awaiter(void 0, v
                 return [4 /*yield*/, pdf2img.convert(path, {
                         //width: 100, //Number in px
                         //height: 100, // Number in px
-                        page_numbers: [1],
+                        page_numbers: [1], // A list of pages to render instead of all of them
                         base64: true,
                         scale: 2.0
                     })];

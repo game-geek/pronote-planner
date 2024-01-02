@@ -140,7 +140,7 @@ app.post("/upload_file", async function (req, res) {
     if (!fields || !files.file || !fields.username || !fields.orgToken || fields.username[0].length < 3 || fields.orgToken[0].length < 10) {
       //If the file is not uploaded, then throw custom error with message: FILE_MISSING
       res.statusCode = 400
-      res.end("Invalid Data")
+      res.end("FILE_MISSING")
     } else {
         const file = files.file[0];
   
@@ -159,9 +159,19 @@ app.post("/upload_file", async function (req, res) {
     }
 
   }  catch (err) {
-      console.log("erroring", err)
-      res.statusCode = 413
-      res.json({code: "File is too large"})
+    console.log("erroring", err)
+    switch (err.message) {
+      case 'invalid pronote timetable':
+        res.statusCode = 400
+        res.json({code: "INVALID_PDF"})
+        return
+      default:
+        res.statusCode = 500
+        res.json({code: "internal server error"})
+        return
+    }
+
+      
     }
   });
 

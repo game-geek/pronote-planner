@@ -150,15 +150,17 @@ const Dashboard = () => {
 
     return (
         <div className={styles.main}>
-            <div style={{display: "flex", alignItems: "space-between", justifyContent: "space-between", marginLeft: 20 , marginRight: 20}}>
-                <p onClick={() => copyToClipBoard(userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please signin", "copied share url !")}>
-                    <strong>Your add timetable url to share:</strong> {userTokens ? <a href={"https://pronote-planner.web.app/org/" + userTokens[0]} target="_blank">{"https://pronote-planner.web.app/org/" + userTokens[0]}</a> : "error, please sign in"}
-                </p>
-                <button onClick={() => copyToClipBoard(userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please signin", "copied share url !")}><FaRegCopy /></button>
+            <div className={styles.top}>
+                <div style={{display: "flex", alignItems: "space-between", justifyContent: "space-between", marginLeft: 20 , marginRight: 20}}>
+                    <p onClick={() => copyToClipBoard(userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please signin", "copied share url !")}>
+                        <strong>Your add timetable url to share:</strong> {userTokens ? <a href={"https://pronote-planner.web.app/org/" + userTokens[0]} target="_blank">{"https://pronote-planner.web.app/org/" + userTokens[0]}</a> : "error, please sign in"}
+                    </p>
+                    <button onClick={() => copyToClipBoard(userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please signin", "copied share url !")}><FaRegCopy /></button>
+                </div>
+                <button onClick={() => setLogoutWarningModalOpen(true)}>Logout</button>
+                <button onClick={() => setCredentialModalOpen(true)}>show account credentials</button>
+                {!editing && <button onClick={() => setEditing(true)}><MdEdit /></button>}
             </div>
-            <button onClick={() => setLogoutWarningModalOpen(true)}>Logout</button>
-            <button onClick={() => setCredentialModalOpen(true)}>show account credentials</button>
-            {!editing && <button onClick={() => setEditing(true)}><MdEdit /></button>}
             {(scheduleData && scheduleData.free) && <form ref={ref} onChange={handleChange} onSubmit={handleSubmit}>
                 {editing && <button type="submit"><FaRegSave /></button>}
                 {editing && <button onClick={resetForm} type="reset"><IoMdClose/></button>}
