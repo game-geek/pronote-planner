@@ -2,10 +2,19 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { OrgContext } from "./context/orgContext"
 import Modal from 'react-modal';
 import styles from "./Dashboard.module.css"
+import tableStyles from "./tableStyles.module.css"
+
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import {auth, db} from "./firebase";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import React from "react";
+// icons
+import { MdEdit } from "react-icons/md";
+import { FaRegSave } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
+import { FaRegCopy } from "react-icons/fa";
+import Loader from "./Loader";
 
 const customStyles = {
     content: {
@@ -23,10 +32,13 @@ const customStyles = {
 const Dashboard = () => {
     const {LogOut, scheduleData, userTokens, authIsReady} = useContext(OrgContext)
     const [canUpdate, setCanUpdate] = useState<boolean>(false)
-    const ref = useRef(null)
+    const ref = useRef<HTMLFormElement>(null) 
     const [modalIsOpen, setIsOpen] = useState(false);
     const [user, setUser] = useState("")
     const navigate = useNavigate();
+    const [deletingUser, setDeletingUser] = useState(false)
+
+    const [editing, setEditing] = useState<boolean>(false)
 
     const [credentialModalOpen, setCredentialModalOpen] = useState<boolean>(false)
     const [logoutWarningModalOpen, setLogoutWarningModalOpen] = useState<boolean>(false)
@@ -39,14 +51,27 @@ const Dashboard = () => {
         }
     }, [userTokens, authIsReady])
 
+
     function handleDeleteUser() {
         setIsOpen(false)
+        if (!auth.currentUser) return toast("❌ please signin", {
+            autoClose: 2000,
+            hideProgressBar: true
+        })
         // delete user 
-        deleteDoc(doc(db, "organisations/" + localStorage.getItem("__t__") + "/persons/" + user)).catch(err => alert(err.code))
-        
+        deleteDoc(doc(db, "organisations/" + auth.currentUser.uid + "/persons/" + user))
+            .catch(err => toast("❗ couldn't delete user: " + err.code, {
+                autoClose: 2000,
+                hideProgressBar: true
+            }))
+            
     }
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
+        if (!auth.currentUser) return toast("❌ please signin", {
+            autoClose: 2000,
+            hideProgressBar: true
+        })
         if (!scheduleData || !scheduleData.free) {
             return
         }
@@ -54,42 +79,51 @@ const Dashboard = () => {
         // @ts-ignore
         const formData = new FormData(ref.current);
         // @ts-ignore
-        const formObject: {[uid: string]: string} = Object.fromEntries(formData.entries());
-        let changed = false
-        const simplified = scheduleData.free.map((el, index) => {return {id: index, starred: el.starred}})
-        const keys = Object.keys(formObject)
-        console.log(keys)
+        const formKeys: string[] = Object.keys(Object.fromEntries(formData.entries()));
+
         // modified data
         const newData = {...scheduleData, free: scheduleData.free.map((option, index) => {
             return {
                 ...option,
-                starred: String(index) in formObject ? formObject[String(index)] == "on" ? true : false : option.starred
+                // formObject contains only elements checked, and all of them
+                starred: formKeys.includes(String(index))
             }
         })}
-        console.log(newData)
-        // updateDoc(doc(db, "organisations/" + auth.currentUser?.uid), scheduleData)
-        // setCanUpdate(false)
+        updateDoc(doc(db, "organisations/" + auth.currentUser.uid), {free: newData.free}).catch(err => toast("❗ couldn't update listing: " + err.code, {
+            autoClose: 2000,
+            hideProgressBar: true
+        }))
+        setCanUpdate(false)
+        setEditing(false)
     }
     function handleChange(e: React.ChangeEvent<HTMLFormElement>) {
         // enable update selected
-        console.log(e.target, ref.current)
         // @ts-ignore
-        const formData = new FormData(ref.current);
+        const formData = new FormData(ref.current);// Display the values
+        // object with all the selected times
         // @ts-ignore
-        const formObject: {[uid]: string} = Object.fromEntries(formData.entries());
+        const formKeys: string[] = Object.keys(Object.fromEntries(formData.entries()));
+        console.log(formKeys)
         let changed = false
-        const simplified = scheduleData?.free.map((el, index) => {return {id: index, starred: el.starred}})
-        const keys = Object.keys(formObject)
-        console.log( formObject)
-        for (let i=0; i < keys.length; i++) {
-            // @ts-ignore
-            if (simplified.includes({id: keys[i], starred: formObject[keys[i]] == "on" ? true : false})) {
-                // is equal
+        //  @ts-ignore
+        const simplified: number[] = scheduleData?.free.reduce((total: number[], el, index) => {
+            if (el.starred) total.push(index)
+            return total
+        }, [])
+
+        console.log(simplified)
+        for (const key of formKeys) {
+            
+            if (simplified.includes(Number(key))) {
+                // not modified
             } else {
                 // is not 
                 changed = true
-                break
+                 break
             }
+        }
+        if (formKeys.length !== simplified.length) {
+            changed = true
         }
         if (changed) {
             setCanUpdate(true)
@@ -108,46 +142,60 @@ const Dashboard = () => {
         })
       }
 
+      function resetForm (){
+        setCanUpdate(false)
+        ref.current?.reset()
+        setEditing(false)
+      }
+
     return (
-        <>
+        <div className={styles.main}>
             <div style={{display: "flex", alignItems: "space-between", justifyContent: "space-between", marginLeft: 20 , marginRight: 20}}>
                 <p onClick={() => copyToClipBoard(userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please signin", "copied share url !")}>
-                    <strong>Your add timetable url to share:</strong> {userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please sign in"}
+                    <strong>Your add timetable url to share:</strong> {userTokens ? <a href={"https://pronote-planner.web.app/org/" + userTokens[0]} target="_blank">{"https://pronote-planner.web.app/org/" + userTokens[0]}</a> : "error, please sign in"}
                 </p>
-                <button onClick={() => copyToClipBoard(userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please signin", "copied share url !")}>Copy Share Url</button>
+                <button onClick={() => copyToClipBoard(userTokens ? "https://pronote-planner.web.app/org/" + userTokens[0] : "error, please signin", "copied share url !")}><FaRegCopy /></button>
             </div>
             <button onClick={() => setLogoutWarningModalOpen(true)}>Logout</button>
             <button onClick={() => setCredentialModalOpen(true)}>show account credentials</button>
+            {!editing && <button onClick={() => setEditing(true)}><MdEdit /></button>}
             {(scheduleData && scheduleData.free) && <form ref={ref} onChange={handleChange} onSubmit={handleSubmit}>
-                {canUpdate && <button type="submit">show selected times to everybody</button>}
-                <table>
+                {editing && <button type="submit"><FaRegSave /></button>}
+                {editing && <button onClick={resetForm} type="reset"><IoMdClose/></button>}
+                <table className={tableStyles.table}>
                     <tbody>
                         <tr key={0}>
+                            <th style={{width: "min-width"}}></th>
                             <th>Time</th>
                             <th>people available</th>
                         </tr>
                     {scheduleData.free.map((slot, index) => {
                         return (
-                            <tr key={index+1}>
+                            <tr  key={index+1}>
+                                <th className={slot.starred ? tableStyles.starred : undefined}>{slot.starred ? "starred" : ""}</th>
+                                {/* need to be ablse to inially set the satrres -> bug */}
                                 {/* @ts-ignore */}
-                                <th>{slot.time}<input name={String(index)} type="checkbox"  /></th>
+                                <th>{slot.time}{editing && <input name={String(index)} type="checkbox" defaultChecked={slot.starred}  />}</th>
                                 {/* @ts-ignore */}
-                                <th>{slot.users.map(user => (<p className={styles.user} onClick={(e) => {setIsOpen(true);setUser(e.target.textContent);}} key={(index+1)/10}>{user}</p>))}</th>
+                                <th className={tableStyles.people}>{slot.users.map(user => (<p className={styles.user} onClick={(e) => {setIsOpen(true);setUser(e.target.textContent);}} key={Math.random()}>{user}</p>))}{deletingUser && <Loader />}</th>
                             </tr>
                         )
                     })}
                     </tbody>
                 </table>
+                {!scheduleData || scheduleData.free.length == 0 && <p style={{textAlign: "center"}}>No data available</p>}
             </form>}
             {(!scheduleData || !scheduleData.free) && <p>No Data at the moment</p>}
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
-                contentLabel={"Example Modal" } 
+                contentLabel={"Delete User: " + user } 
                 // @ts-ignore
                 style={customStyles}
+                ariaHideApp={false}
             >
                 <h1>Are you sure you want to delete this user's timetable ?</h1>
+                <p>Note that it might take up to a minute</p>
                 <button style={{marginRight: 20}} type="button" onClick={() => setIsOpen(false)}>Cancel</button>
                 <button style={{backgroundColor: "red", color: "white"}} type="button" onClick={handleDeleteUser}>Delete</button>
             </Modal>
@@ -155,9 +203,10 @@ const Dashboard = () => {
             <Modal
                 isOpen={credentialModalOpen}
                 onRequestClose={() => setCredentialModalOpen(false)}
-                contentLabel={"Example Modal" } 
+                contentLabel={"Your Secret Credentials" } 
                 // @ts-ignore
                 style={customStyles}
+                ariaHideApp={false}
             >
                 <h2>Your credentials are not resetable, so please keep them extremely secret</h2>
                 
@@ -169,16 +218,17 @@ const Dashboard = () => {
             <Modal
                 isOpen={logoutWarningModalOpen}
                 onRequestClose={() => setLogoutWarningModalOpen(false)}
-                contentLabel={"Example Modal" } 
+                contentLabel={"Logout ?" } 
                 // @ts-ignore
                 style={customStyles}
+                ariaHideApp={false}
             >
                 <h1>Logout ?</h1>
                 <p>Insure you have your credentials stored safely</p>
                 <button style={{marginRight: 20, backgroundColor: "red", color: "white"}} type="button"  onClick={LogOut} >Logout</button>
                 <button type="button"  onClick={() => setLogoutWarningModalOpen(false)}>Cancel</button>
             </Modal>
-        </>
+        </div>
     )
 }
 

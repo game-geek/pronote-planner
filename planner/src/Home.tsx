@@ -61,7 +61,7 @@ export default  () => {
 
 
     return (
-        <div>
+        <div style={{margin: '0 5vw'}}>
             <h1>Planner is a free tool to find the best suitable free time in pronote timetables for many people</h1>
             <div>
                 <button onClick={() => setIsOpen(prevState => !prevState)}>{isOpen ? "Cancel" : "Create or modify a schedule"}</button>

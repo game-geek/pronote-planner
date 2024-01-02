@@ -1,7 +1,7 @@
 import { Unsubscribe, addDoc, collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { createContext, useEffect, useState } from "react";
 import {db, auth} from "../firebase";
-import { redirect, useNavigate } from "react-router-dom";
+import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import { OrgContextType, OrgType } from "../lib/formatTimeTable";
 import { onAuthStateChanged, signInWithCustomToken, signOut } from "firebase/auth";
 import { BACKEND_URL } from "../lib/constants";
@@ -33,6 +33,7 @@ function OrgContextProvider({children}: {children: any}) {
     const [userTokens, setUserTokens] = useState<null | [string, string]>(null)
     const [authIsReady, setAuthIsReady] = useState<boolean>(false)
     const navigate = useNavigate();
+    let location = useLocation();
     
     
     useEffect(() => {
@@ -164,7 +165,7 @@ function OrgContextProvider({children}: {children: any}) {
             // succesfull
             setUserTokens(tokens)
             startAccountListener(tokens[0])
-            toast("✨ Welcome back")
+            toast("✨ Welcome")
             navigate("/dashboard")
           }
         
@@ -319,9 +320,9 @@ function OrgContextProvider({children}: {children: any}) {
         return false
       }
     }
-
     return (
       <OrgContext.Provider value={{scheduleData, updateScheduleData, SignUp, LogIn, LogOut, error, pending, userTokens, authIsReady}}>
+        {auth.currentUser && location.pathname != "/dashboard" && <Link to="/dashboard">Go to dashboard</Link>}
         {children}
         <ToastContainer position="bottom-center" autoClose={3000} />
       </OrgContext.Provider>
