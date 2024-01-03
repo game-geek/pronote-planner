@@ -6,7 +6,7 @@ import Dashboard from "./Dashboard"
 
 const App = () => {
   return (
-    <Routes>
+    <Routes>  
       <Route path="/" element={<Home />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/org/*" element={<TimeTable />} />
