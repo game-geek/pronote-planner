@@ -1,0 +1,10 @@
+// get all info per database (create backup)
+pg_dump --host dpg-cle6vrnpc7cc73elqdl0-a.frankfurt-postgres.render.com --port 5432 --user admin  pca > backup_pca.sql
+
+
+// push info to new database (from backup)
+psql -U admin -h dpg-cn53gq21hbls73ai41g0-a.frankfurt-postgres.render.com -W -d main -f backup_main.sql
+psql -U admin -h dpg-cn53gq21hbls73ai41g0-a.frankfurt-postgres.render.com -W -d pca -f backup_pca.sql
+
+// see here for more options
+https://snapshooter.com/learn/import-export-postgresql-database

@@ -162,6 +162,7 @@ function TimeTable() {
         </form>
       </div>}
     {posting && <p><Loader width="70px" height="70px" /></p>}
+    <div>upload PRONOTE timetables only</div>
       {/* <div>{(freeSpots && freeSpots.free) && freeSpots.free.splice(0, 5).map((free, users) => {
         return (
           <div key={free.time}>
