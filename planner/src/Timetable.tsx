@@ -36,7 +36,7 @@ function TimeTable() {
         else if (b.starred) return 1
         else return -Infinity
       })
-      console.log("setting")
+      // console.log("setting")
       setFreeSpots(data)
     })
     return () => {
@@ -45,7 +45,7 @@ function TimeTable() {
   }, [])
 
   useEffect(() => {
-    console.log("s")
+    // console.log("s")
     if (selectedFiles.length === 0) {
       setError("⚠️ missing file")
     } else if (username.length < 3) {
@@ -122,11 +122,12 @@ function TimeTable() {
         }
       })
   };
-  console.log("rerender", freeSpots)
+  // console.log("rerender", freeSpots)
   return (
     <div className={styles.main}>
       <div className="upper">
-        <h2>Planning a Meeting for your organisation</h2>
+        <h2>Planning a Meeting for {freeSpots ? freeSpots.orgName : "your organisation"}</h2>
+        {freeSpots && <p style={{fontSize: 12}}>{freeSpots.orgInfo}</p>}
       </div>
       {posting !== false && <div className={styles.actions}>
         <form

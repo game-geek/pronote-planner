@@ -7,7 +7,9 @@ export type availableTimeType = {
 
 export type OrgType = {
   free: availableTimeType[];
-  username: string
+  username: string,
+  orgName: string,
+  orgInfo: string
 }
 export type OrgContextType = {
   scheduleData: OrgType | null;

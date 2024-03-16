@@ -15,6 +15,7 @@ import { FaRegSave } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { FaRegCopy } from "react-icons/fa";
 import Loader from "./Loader";
+import OrgDetails from "./OrgDetails";
 
 const customStyles = {
     content: {
@@ -103,7 +104,7 @@ const Dashboard = () => {
         // object with all the selected times
         // @ts-ignore
         const formKeys: string[] = Object.keys(Object.fromEntries(formData.entries()));
-        console.log(formKeys)
+        // console.log(formKeys)
         let changed = false
         //  @ts-ignore
         const simplified: number[] = scheduleData?.free.reduce((total: number[], el, index) => {
@@ -111,7 +112,7 @@ const Dashboard = () => {
             return total
         }, [])
 
-        console.log(simplified)
+        // console.log(simplified)
         for (const key of formKeys) {
             
             if (simplified.includes(Number(key))) {
@@ -161,6 +162,7 @@ const Dashboard = () => {
                 <button onClick={() => setCredentialModalOpen(true)}>show account credentials</button>
                 {!editing && <button onClick={() => setEditing(true)}><MdEdit /></button>}
             </div>
+            <OrgDetails org={userTokens ? userTokens[0] : ""} orgName={scheduleData?.orgName || ""} orgInfo={scheduleData?.orgInfo || ""} />
             {(scheduleData && scheduleData.free) && <form ref={ref} onChange={handleChange} onSubmit={handleSubmit}>
                 {editing && <button type="submit"><FaRegSave /></button>}
                 {editing && <button onClick={resetForm} type="reset"><IoMdClose/></button>}
