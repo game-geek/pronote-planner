@@ -1,38 +1,34 @@
-import { Route, Routes } from "react-router-dom"
-import TimeTable from "./Timetable"
-import Home from "./Home"
-import Dashboard from "./Dashboard"
-
+import { Route, Routes } from "react-router-dom";
+import TimeTable from "./Timetable";
+import Home from "./Home";
+import Dashboard from "./Dashboard";
+import { useEffect } from "react";
 
 const App = () => {
+  useEffect(() => {
+    try {
+      const func = async () => {
+        const req = await fetch(
+          "https://pronote-planner-backend.onrender.com/ip"
+        );
+        const data = await req.text();
+        console.log("launched server", data);
+      };
+      func();
+    } catch (err) {
+      console.log("server error", err);
+    }
+  }, []);
   return (
-    <Routes>  
+    <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/org/*" element={<TimeTable />} />
-      
-  </Routes>
-  )
-}
+    </Routes>
+  );
+};
 
-export default  App
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default App;
 
 // import { ChangeEvent, useEffect, useState } from 'react'
 // import reactLogo from './assets/react.svg'
@@ -54,7 +50,6 @@ export default  App
 //     reader.readAsArrayBuffer(file)
 //   })
 // }
- 
 
 // function App() {
 //   return <>
