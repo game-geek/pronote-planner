@@ -1,9 +1,18 @@
-PGPASSWORD=9Mq0AgJwv9xtbEUrrmPDooSgiettCBsZ psql -h dpg-cle6vrnpc7cc73elqdl0-a.frankfurt-postgres.render.com -U admin everything_new
-pg_dump --host dpg-cjm7vtlk5scs73di5ck0-a.frankfurt-postgres.render.com --port 5432 --user admin  pca > backup_pca.sql
-install postgreql && postgreql-client (you dont need both): https://askubuntu.com/questions/1456014/how-to-upgrade-postgresql-from-14-to-15-on-ubuntu-22-04
 
+// to just connect to the db
+PGPASSWORD=9Mq0AgJwv9xtbEUrrmPDooSgiettCBsZ psql -h dpg-cle6vrnpc7cc73elqdl0-a.frankfurt-postgres.render.com -U admin everything_new
+
+// to export db to file
+pg_dump --host dpg-cjm7vtlk5scs73di5ck0-a.frankfurt-postgres.render.com --port 5432 --user admin  pca > backup_pca.sql
+
+
+// install command line postgre stuff on linux
+install postgreql && postgreql-client (you dont need both): https://askubuntu.com/questions/1456014/how-to-upgrade-postgresql-from-14-to-15-on-ubuntu-22-04
 sudo su root
-PGPASSWORD=QbUjAygObQUeHhHETRXREuewmF4pnZ2z sudo -u postgres psql -h dpg-cjm7vtlk5scs73di5ck0-a.frankfurt-postgres.render.com -W -U admin main_m5l8
+
+
+// to import db from file (create db before)
+PGPASSWORD=QbUjAygObQUeHhHETRXREuewmF4pnZ2z sudo -u postgres psql -h dpg-cjm7vtlk5scs73di5ck0-a.frankfurt-postgres.render.com -W -U admin db_name -f dbfiletoimportfrom.sql
 
 https://snapshooter.com/learn/import-export-postgresql-database
 https://www.reddit.com/r/github/comments/117nl53/what_is_the_password_for_root_account_in_github/?rdt=51509
